@@ -110,7 +110,7 @@ function spinBtnHandler(time: number, interval: number) {
   setTimeout(() => stopSpinners(), time);
 }
 
-// rotates between the colours in Colours.enum.  
+ 
 function spinSpinners() {
   spinnerCounter++;
 
