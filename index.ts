@@ -154,7 +154,7 @@ function addToHistory() {
   //     Red LeftHand last spun at num 23
 function statsBtnHandler(colour, bodyPart) {
   const statsTable= document.getElementById('statsResults')
-  statsTable.innerHTML = `<div>${bodyPart}${colour} Rolled: ${getAmount(colour,bodyPart)} times ====== Last roll ${getLastSpun(colour,bodyPart)}`
+  statsTable.innerHTML = `<div>${bodyPart}${colour} Rolls ${getAmount(colour,bodyPart)} times ====== Last roll ${getLastSpun(colour,bodyPart)}`
  
 }
   
