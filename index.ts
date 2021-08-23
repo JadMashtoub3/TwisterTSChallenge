@@ -149,29 +149,13 @@ function addToHistory() {
   history.append(newRow);
 
 }
-
-function statsBtnHandler(colour, bodyPart) {
-  let spincombocount = getAmount(colour, bodyPart);
-
-  let lastspin = getLastSpun(colour, bodyPart);
-
-  stats.innerHTML = '';
-
-  // add the number of spins
-  let spinsCount: HTMLElement = document.createElement('div');
-  spinsCount.innerHTML = `${colour} ${bodyPart} spun ${spincombocount} time(s).`;
-  stats.appendChild(spinsCount);
-
-  spinsCount.innerHTML = `${colour} ${bodyPart} spun ${spincombocount} time(s).`;
-  stats.appendChild(lastSpun);
-
-
-
-  // TODO set the statsResults div innerHTML to the amount and last spun number that the user has chosen***
+ // set the statsResults div innerHTML to the amount and last spun number that the user has chosen
   // eg. Red LeftHand spun 10 times
   //     Red LeftHand last spun at num 23
-  if (lastspin > 0) { lastSpun.innerHTML = `${colour} ${bodyPart} last spun at num  ${lastspin}`;
-  }
+function statsBtnHandler(colour, bodyPart) {
+  const statsTable= document.getElementById('statsResults')
+  statsTable.innerHTML = `<div>${bodyPart}${colour} Rolled: ${getAmount(colour,bodyPart)} times ====== Last roll ${getLastSpun(colour,bodyPart)}`
+ 
 }
   
 // TODO returns the amount of times the combination of selected of colour and body part have been spun***
