@@ -22,28 +22,59 @@ let selectedBodyPart: string;
 // use to store the results of spins
 let spinHistoryArray: Array<SpinRecord> = [];
 
-
+//dont change above=======================
 
 const colourDiv = document.getElementById('colourResult');
+const colourSelector: HTMLSelectElement = <HTMLSelectElement>(
+  document.getElementById('colourSelect')
+);
+const bodyPartP = document.getElementById('bodyPartText');
+const bodyPartSelector: HTMLSelectElement = <HTMLSelectElement>(
+  document.getElementById('bodyPartSelect')
+);
 
-// sets up an array of strings to represent the colours from the enum
+const stats = document.getElementById('statsResults');
+
+
+const history = document.getElementById('historyTableBody');
+
+//How many of selected was spun
+const lastSpun = document.getElementById('lastSpun');
+
+// sets up an array of strings to represent the colours from the enum *****
+
 let coloursArray: Array<string> = [];
 for (let colour in Colours) {
   if (isNaN(Number(colour))) {
     coloursArray.push(colour);
+
+    let colorselect: HTMLOptionElement = document.createElement('option');
+    colorselect.innerHTML = colour;
+    colorselect.value = colour.toString();
+    colourSelector.add(colorselect);
   }
 }
 
-const bodyPartP = document.getElementById('bodyPartText');
 
 // TODO see above and create an array of strings to store the bodypart strings from the enum
 let bodyPartsArray: Array<string> = [];
+for (let bodypart in BodyParts) {
+  if (isNaN(Number(bodypart))) {
+    bodyPartsArray.push(bodypart);
 
-
+    let bodyselect: HTMLOptionElement = document.createElement('option');
+    bodyselect.innerHTML = bodypart;
+    bodyselect.value = bodypart.toString();
+    bodyPartSelector.add(bodyselect);
+  }
+}
 
 // TODO add eventlistners to buttons
-const spinBtn = <HTMLButtonElement> document.getElementById('spin-btn');
-spinBtn.addEventListener('click', () => spinBtnHandler(2000, 100)); 
+const spinBtn = <HTMLButtonElement>document.getElementById('spin-btn');
+spinBtn.addEventListener('click', () => spinBtnHandler(2000, 100));
+
+const statsBtn = <HTMLButtonElement>document.getElementById('statsBtn');
+statsBtn.addEventListener('click', () => statsBtnHandler(colourSelector.value, bodyPartSelector.value));
 
 // TODO handles the spin button click
 // time in ms, interval in ms
@@ -51,17 +82,29 @@ function spinBtnHandler(time: number, interval: number) {
   
   // start spinner rotating through colours
   spinnerCycle = setInterval(() => spinSpinners(), interval);
-
+  spinCount++;
   // TODO randomly select colour from array
-  let colourIndex: number = 0;
-  selectedColour = coloursArray[colourIndex];
+  let colornum: number = 0;
+  colornum = Math.floor(Math.random() * coloursArray.length);
+  selectedColour = coloursArray[colornum];
+
 
   // TODO randomly select bodyPart from array
-  let bodyPartIndex: number = 0;
-  selectedBodyPart = bodyPartsArray[bodyPartIndex];
+  let bodypartnum: number = 0;
+  bodypartnum = Math.floor(Math.random() * bodyPartsArray.length);
+  selectedBodyPart = bodyPartsArray[bodypartnum];
 
+  spinHistoryArray.push(
+    new SpinRecord(
+      spinCount,
+      Colours[selectedColour],
+      BodyParts[selectedBodyPart]
+    )
+  );
 
   spinBtn.disabled = true;
+
+  
   
   // set timer to stop the spinners rotating
   setTimeout(() => stopSpinners(), time);
@@ -71,39 +114,84 @@ function spinBtnHandler(time: number, interval: number) {
 function spinSpinners() {
   spinnerCounter++;
 
-  colourDiv.style.backgroundColor = coloursArray[spinnerCounter%coloursArray.length];
+  colourDiv.style.backgroundColor =
+    coloursArray[spinnerCounter % coloursArray.length];
 
-  bodyPartP.innerHTML = bodyPartsArray[spinnerCounter%bodyPartsArray.length];
+  bodyPartP.innerHTML = bodyPartsArray[spinnerCounter % bodyPartsArray.length];
 }
-
 // stops spinner after time parameter, time in ms
 function stopSpinners() {
-  clearInterval(spinnerCycle)
-  // TODO set colourDiv and bodyPartP to the randomly spun results
-
-
+  clearInterval(spinnerCycle);
+  bodyPartP.innerHTML = selectedBodyPart;
   spinBtn.disabled = false;
+  
   addToHistory();
 }
 
+// TODO set colourDiv and bodyPartP to the randomly spun results ****^
 
-// TODO add the newly spun result to the history table
+
+// TODO add the newly spun result to the history table***
 function addToHistory() {
-  
+  let newRow = document.createElement('tr');
+
+  let NumRow = document.createElement('td');
+  NumRow.innerHTML = spinCount.toString();
+  newRow.append(NumRow);
+
+  let ColorRow = document.createElement('td');
+  ColorRow.innerHTML = selectedColour;
+  newRow.append(ColorRow);
+
+  let BodyPartRow = document.createElement('td');
+  BodyPartRow.innerHTML = selectedBodyPart;
+  newRow.append(BodyPartRow);
+  history.append(newRow);
+
 }
 
-function statsBtnHandler() {
-  // TODO set the statsResults div innerHTML to the amount and last spun number that the user has chosen
+function statsBtnHandler(colour, bodyPart) {
+  let spincombocount = getAmount(colour, bodyPart);
+
+  let lastspin = getLastSpun(colour, bodyPart);
+
+  stats.innerHTML = '';
+
+  // add the number of spins
+  let spinsCount: HTMLElement = document.createElement('div');
+  spinsCount.innerHTML = `${colour} ${bodyPart} spun ${spincombocount} time(s).`;
+  stats.appendChild(spinsCount);
+
+
+  // TODO set the statsResults div innerHTML to the amount and last spun number that the user has chosen***
   // eg. Red LeftHand spun 10 times
   //     Red LeftHand last spun at num 23
+  if (lastspin > 0) { lastSpun.innerHTML = `${colour} ${bodyPart} spun last:  ${lastspin}`;
+  }
 }
 
-// TODO returns the amount of times the combination of selected of colour and body part have been spun
+// TODO returns the amount of times the combination of selected of colour and body part have been spun***
 function getAmount(colour, bodyPart): number {
-  return 0;
+  let picker = 0;
+  for (let pointer = 0; pointer < spinHistoryArray.length; pointer++) {
+    if (BodyParts[spinHistoryArray[pointer].bodyPart] === bodyPart) {
+      if (Colours[spinHistoryArray[pointer].colour] === colour) {
+        picker++;
+      }
+    }
+  }
+  return picker;
 }
 
-// TODO return the last num which the combination of selected of colour and body part have been spun
+
+// TODO return the last num which the combination of selected of colour and body part have been spun ***
 function getLastSpun(colour, bodyPart): number {
-  return 0;
+  for (let pointer = spinHistoryArray.length; pointer > 0; pointer--) {
+    if (BodyParts[spinHistoryArray[pointer - 1].bodyPart] === bodyPart) {
+      if (Colours[spinHistoryArray[pointer - 1].colour] === colour) {
+        return pointer;
+      }
+    }
+  }
+  return;
 }

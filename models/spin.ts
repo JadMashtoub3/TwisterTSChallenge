@@ -6,8 +6,16 @@ export interface ISpin {
   bodyPart: BodyParts;
 }
 
-// TODO: create a SpinRecord class which implements ISpin and adds a new attribute num:number
+// TODO: create a SpinRecord class which implements ISpin and adds a new attribute num:number  **
 export class SpinRecord implements ISpin {
+public num: Number;
+public colour: Colours;
+public bodyPart: BodyParts;
 
 
-}
+constructor(num: Number, Colour: Colours, BodyPart: BodyParts) {
+              this.num = num;
+              this.colour = Colour;
+              this.bodyPart = BodyPart;
+            }
+          }
