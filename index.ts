@@ -154,8 +154,10 @@ function addToHistory() {
   //     Red LeftHand last spun at num 23
 function statsBtnHandler(colour, bodyPart) {
   const statsTable= document.getElementById('statsResults')
-  statsTable.innerHTML = `<div>${bodyPart}${colour} Rolls ${getAmount(colour,bodyPart)} times ====== Last roll ${getLastSpun(colour,bodyPart)}`
- 
+  statsTable.innerHTML = `<div>${bodyPart}${colour} Rolls ${getAmount(colour,bodyPart)} times ====== Last roll ${getLastSpun(colour,bodyPart)}never`
+ if (spinCount == 0){
+   return "never";
+ }
 }
   
 // TODO returns the amount of times the combination of selected of colour and body part have been spun***
